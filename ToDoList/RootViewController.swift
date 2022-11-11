@@ -5,6 +5,15 @@
 //  Created by Nirav Goswami on 2022-11-09.
 //
 
+//  Description: To Do List App will allow the user to enter a list of Todos (or tasks) on the main screen. Include a
+//               second screen that displays the Todo Details.
+//  Version: v1.0.0
+//
+//  Group #18
+//  Nirav Goswami (301252385)
+//  Samir Patel (301286671)
+//  Esha Naik (301297804)
+
 import UIKit
 
 struct ToDoItem {
@@ -39,8 +48,6 @@ class RootViewController: UITableViewController {
     let attributesForDueSubTitle: [NSAttributedString.Key: Any] = [
         .foregroundColor: UIColor(red: 0.94, green: 0.28, blue: 0.23, alpha: 1.00)
     ]
-
-    
 
     let dateFormatter = DateFormatter()
     private var todolist:[ToDoItem] = []
@@ -141,19 +148,12 @@ class RootViewController: UITableViewController {
     
     
     @objc func onEdit(_ sender: Any?){
-        print("Edit on", index)
+//        print("Edit on", index)
         self.performSegue(withIdentifier: "showToDoDetail", sender: sender)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-//        let tableViewCell = sender as! UITableViewCell
-//        let indexPath = tableView.indexPath(for: tableViewCell)!
-        print(sender,"Prepare Called")
-//        let font = fontForDisplay(atIndexPath: indexPath as NSIndexPath)
         let sizesVC =  segue.destination as! ToDoDetailViewController
-        
     }
 }
 

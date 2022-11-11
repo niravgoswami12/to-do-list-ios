@@ -5,14 +5,18 @@
 //  Created by Nirav Goswami on 2022-11-10.
 //
 
+//  Description: To Do List App will allow the user to enter a list of Todos (or tasks) on the main screen. Include a
+//               second screen that displays the Todo Details.
+//  Version: v1.0.0
+//
+//  Group #18
+//  Nirav Goswami (301252385)
+//  Samir Patel (301286671)
+//  Esha Naik (301297804)
+
 import UIKit
 
-//protocol ToDoItemDelegate{
-//    func onEdit(at index:IndexPath)
-//}
-
 class ToDoItemCell: UITableViewCell {
-//    var delegate:ToDoItemDelegate!
     var indexPath:IndexPath!
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var subTitle: UILabel!
@@ -24,7 +28,6 @@ class ToDoItemCell: UITableViewCell {
     
     @IBOutlet weak var editBtn: UIButton!
     @IBAction func onEdit(_ sender: Any) {
-//        self.delegate?.onEdit(at: indexPath)
     }
 
     @IBOutlet weak var backView: UIView!
