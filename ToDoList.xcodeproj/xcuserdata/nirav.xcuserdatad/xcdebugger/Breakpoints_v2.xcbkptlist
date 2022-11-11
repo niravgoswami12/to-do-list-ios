@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "259A404E-2716-467B-A6E8-A216A2221EB6"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6B90DBC8-29F8-4660-BB43-DA5C5CB4C1EA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ToDoList/ToDoItemCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "24"
+            endingLineNumber = "24"
+            landmarkName = "ToDoItemCell"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "6B90DBC8-29F8-4660-BB43-DA5C5CB4C1EA - 63d12c7300be2c2e"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ToDoList.ToDoItemCell.isCompleted.getter : Swift.Optional&lt;__C.UISwitch&gt;"
+                  moduleName = "ToDoList"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nirav/Documents/Files/MAPD/MAPD-714/To-Do-List/ToDoList/ToDoList/ToDoItemCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "24"
+                  endingLineNumber = "24"
+                  offsetFromSymbolStart = "88">
+               </Location>
+               <Location
+                  uuid = "6B90DBC8-29F8-4660-BB43-DA5C5CB4C1EA - d8cdc4f2aed9e622"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ToDoList.ToDoItemCell.isCompleted.setter : Swift.Optional&lt;__C.UISwitch&gt;"
+                  moduleName = "ToDoList"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nirav/Documents/Files/MAPD/MAPD-714/To-Do-List/ToDoList/ToDoList/ToDoItemCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "24"
+                  endingLineNumber = "24"
+                  offsetFromSymbolStart = "108">
+               </Location>
+               <Location
+                  uuid = "6B90DBC8-29F8-4660-BB43-DA5C5CB4C1EA - 40b7103ad6f0ca93"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ToDoList.ToDoItemCell.isCompleted.modify : Swift.Optional&lt;__C.UISwitch&gt;"
+                  moduleName = "ToDoList"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nirav/Documents/Files/MAPD/MAPD-714/To-Do-List/ToDoList/ToDoList/ToDoItemCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "24"
+                  endingLineNumber = "24"
+                  offsetFromSymbolStart = "0">
+               </Location>
+               <Location
+                  uuid = "6B90DBC8-29F8-4660-BB43-DA5C5CB4C1EA - dc3e2ee6be13aa10"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ToDoList.ToDoItemCell.isCompleted.modify : Swift.Optional&lt;__C.UISwitch&gt; with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "ToDoList"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nirav/Documents/Files/MAPD/MAPD-714/To-Do-List/ToDoList/ToDoList/ToDoItemCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "24"
+                  endingLineNumber = "24"
+                  offsetFromSymbolStart = "28">
+               </Location>
+               <Location
+                  uuid = "6B90DBC8-29F8-4660-BB43-DA5C5CB4C1EA - 9ba0900cace73913"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ToDoList.ToDoItemCell.init(style: __C.UITableViewCellStyle, reuseIdentifier: Swift.Optional&lt;Swift.String&gt;) -&gt; ToDoList.ToDoItemCell"
+                  moduleName = "ToDoList"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nirav/Documents/Files/MAPD/MAPD-714/To-Do-List/ToDoList/ToDoList/ToDoItemCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "24"
+                  endingLineNumber = "24"
+                  offsetFromSymbolStart = "244">
+               </Location>
+               <Location
+                  uuid = "6B90DBC8-29F8-4660-BB43-DA5C5CB4C1EA - 8d776b9c05089dd0"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ToDoList.ToDoItemCell.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;ToDoList.ToDoItemCell&gt;"
+                  moduleName = "ToDoList"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nirav/Documents/Files/MAPD/MAPD-714/To-Do-List/ToDoList/ToDoList/ToDoItemCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "24"
+                  endingLineNumber = "24"
+                  offsetFromSymbolStart = "224">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
