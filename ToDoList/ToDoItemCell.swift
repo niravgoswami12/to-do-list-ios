@@ -15,20 +15,19 @@ class ToDoItemCell: UITableViewCell {
 //    var delegate:ToDoItemDelegate!
     var indexPath:IndexPath!
     @IBOutlet weak var title: UILabel!
-    
     @IBOutlet weak var subTitle: UILabel!
     
+    @IBOutlet weak var isCompleted: UISwitch!
     @IBAction func onToggleChange(_ sender: Any) {
     }
     
-    @IBOutlet weak var isCompleted: UISwitch!
     
     @IBOutlet weak var editBtn: UIButton!
     @IBAction func onEdit(_ sender: Any) {
 //        self.delegate?.onEdit(at: indexPath)
     }
 
-    
+    @IBOutlet weak var backView: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
