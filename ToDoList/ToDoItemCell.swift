@@ -16,18 +16,28 @@
 
 import UIKit
 
+protocol ToDoItemCellDelegate: AnyObject {
+    func onEdit(index: Int)
+    func onIsCompletedToggleChange(value: Bool, index: Int)
+}
+
 class ToDoItemCell: UITableViewCell {
     var indexPath:IndexPath!
+    weak var delegate : ToDoItemCellDelegate?
+    
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var subTitle: UILabel!
     
     @IBOutlet weak var isCompleted: UISwitch!
-    @IBAction func onToggleChange(_ sender: Any) {
+    @IBAction func onToggleChange(_ sender: UISwitch) {
+        let value = sender.isOn
+        delegate?.onIsCompletedToggleChange(value: value, index: indexPath!.row)
     }
     
     
     @IBOutlet weak var editBtn: UIButton!
     @IBAction func onEdit(_ sender: Any) {
+        delegate?.onEdit(index: indexPath!.row)
     }
 
     @IBOutlet weak var backView: UIView!

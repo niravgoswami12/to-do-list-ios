@@ -15,20 +15,17 @@
 //  Esha Naik (301297804)
 
 import UIKit
+import CoreData
 
-struct ToDoItem {
-    var name: String
-    var notes: String
-    var isCompleted: Bool
-    var hasDueDate: Bool
-    var dueDate: Date
 
-}
-
-class RootViewController: UITableViewController {
+class RootViewController: UITableViewController, ToDoItemCellDelegate {
+    
+    
     
     
     private static let toDoItemCell = "ToDoItemCell"
+    
+    
     
     @IBOutlet var toDoListTable: UITableView!
     
@@ -48,42 +45,96 @@ class RootViewController: UITableViewController {
     let attributesForDueSubTitle: [NSAttributedString.Key: Any] = [
         .foregroundColor: UIColor(red: 0.94, green: 0.28, blue: 0.23, alpha: 1.00)
     ]
+    
+    let attributesForDefault: [NSAttributedString.Key: Any] = [
+        .foregroundColor: UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
+    ]
 
     let dateFormatter = DateFormatter()
-    private var todolist:[ToDoItem] = []
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        self.toDoListTable.dataSource = self
-        self.toDoListTable.delegate = self
-        self.registerTableViewCells()
-        
+    var todolist = [ToDo]()
+    weak var actionToEnable : UIAlertAction?
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         loadToDoList()
     }
     
-    func loadToDoList(){
-        dateFormatter.dateFormat = "dd-MM-yyyy HH:mm"
-
-        todolist = [
-            ToDoItem(name: "To Do 1",notes:"", isCompleted : true,hasDueDate:true,dueDate: Date()),
-            ToDoItem(name: "To Do 2",notes:"", isCompleted : false,hasDueDate:true,dueDate: dateFormatter.date(from: "01-03-2021 09:15")!),
-            ToDoItem(name: "To Do 3",notes:"", isCompleted : false,hasDueDate:true,dueDate: dateFormatter.date(from: "25-11-2022 09:15")!),
-            ToDoItem(name: "To Do 4",notes:"", isCompleted : false,hasDueDate:true,dueDate: dateFormatter.date(from: "10-10-2022 09:15")!),
-            ToDoItem(name: "To Do 5",notes:"", isCompleted : false,hasDueDate:false,dueDate: Date()),
-            ToDoItem(name: "To Do 6",notes:"", isCompleted : false,hasDueDate:true,dueDate: dateFormatter.date(from: "20-12-2022 09:15")!),
-            
-    //        ToDoItem(name: "To Do 7",notes:"", isCompleted : false,hasDueDate:true,dueDate: Date()),
-    //        ToDoItem(name: "To Do 8",notes:"", isCompleted : false,hasDueDate:true,dueDate: Date()),
-    //        ToDoItem(name: "To Do 9",notes:"", isCompleted : true,hasDueDate:true,dueDate: Date()),
-    //        ToDoItem(name: "To Do 10",notes:"", isCompleted : false,hasDueDate:true,dueDate: Date()),
-    //        ToDoItem(name: "To Do 11",notes:"", isCompleted : false,hasDueDate:true,dueDate: Date()),
-    //        ToDoItem(name: "To Do 12",notes:"", isCompleted : false,hasDueDate:true,dueDate: Date())
-            ]
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.toDoListTable.dataSource = self
+        self.toDoListTable.delegate = self
+        self.registerTableViewCells()
     }
-
+    
+    func loadToDoList(){
+        let toDoFetch: NSFetchRequest<ToDo> = ToDo.fetchRequest()
+        let sortByDate = NSSortDescriptor(key: #keyPath(ToDo.createdDate), ascending: false)
+        toDoFetch.sortDescriptors = [sortByDate]
+        do {
+            let managedContext = AppDelegate.sharedAppDelegate.coreDataStack.managedContext
+            let results = try managedContext.fetch(toDoFetch)
+            todolist = results
+            let range = NSMakeRange(0, self.toDoListTable.numberOfSections)
+            let sections = NSIndexSet(indexesIn: range)
+            self.toDoListTable.reloadSections(sections as IndexSet, with: .automatic)
+        } catch let error as NSError {
+            print("Fetch error: \(error) description: \(error.userInfo)")
+        }
+    }
+    
     @IBAction func onAdd(_ sender: Any) {
-        todolist.insert(ToDoItem(name: "",notes:"", isCompleted : false,hasDueDate:false,dueDate: Date()), at: 0)
+        let dialogMessage = UIAlertController(title: "", message: "Add New ToDo", preferredStyle: .alert)
+        
+        
+        dialogMessage.addTextField(configurationHandler: {(titleStr: UITextField) in
+            titleStr.placeholder = "Enter title here..."
+            titleStr.addTarget(dialogMessage, action: #selector(dialogMessage.textDidChangeInAlert), for: .editingChanged)
+
+        })
+        // Create OK button with action handler
+        let ok = UIAlertAction(title: "OK", style: .default, handler: { [self] (action) -> Void in
+           
+            var titleStr:String = ((dialogMessage.textFields![0]).text!)
+            
+            
+            if titleStr != "" {
+                saveData(title: titleStr)
+            }
+        })
+        
+        // Create Cancel button with action handlder
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) -> Void in
+        }
+        
+        //Add OK and Cancel button to dialog message
+        ok.isEnabled = false
+        dialogMessage.addAction(ok)
+        dialogMessage.addAction(cancel)
+
+        // Present dialog message to user
+        self.present(dialogMessage, animated: true, completion: nil)
+        
+    }
+    
+    
+    
+    func saveData(title: String){
+        let managedContext = AppDelegate.sharedAppDelegate.coreDataStack.managedContext
+        let newToDo = ToDo(context: managedContext)
+        newToDo.setValue(title, forKey: #keyPath(ToDo.name))
+        newToDo.setValue(false, forKey: #keyPath(ToDo.hasDueDate))
+        newToDo.setValue(false, forKey: #keyPath(ToDo.isCompleted))
+        newToDo.setValue(Date(), forKey: #keyPath(ToDo.createdDate))
+        self.todolist.insert(newToDo, at: 0)
+        do {
+            try managedContext.save()
+            let range = NSMakeRange(0, self.toDoListTable.numberOfSections)
+            let sections = NSIndexSet(indexesIn: range)
+            self.toDoListTable.reloadSections(sections as IndexSet, with: .automatic)
+        } catch  {
+            print(error)
+        }
     }
     
     private func registerTableViewCells() {
@@ -102,58 +153,121 @@ class RootViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//           let cell = tableView.dequeueReusableCell(withIdentifier: RootViewController.toDoItemCell, for: indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: RootViewController.toDoItemCell) as? ToDoItemCell
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: RootViewController.toDoItemCell, for: indexPath) as? ToDoItemCell
+        cell?.delegate = self
         cell?.backView.layer.cornerRadius = 5
         cell?.backView.clipsToBounds = true
         
         cell?.indexPath = indexPath
-        
-        cell?.editBtn.addTarget(self, action: #selector(RootViewController.onEdit(_:)), for: .touchUpInside)
-       
+     
         let todo = todolist[indexPath.row]
-
-        if (todo.isCompleted == true){
-            cell?.title?.attributedText = NSAttributedString(string: todo.name, attributes: attributesForCompletedTitle)
-            
+        if (todo.isCompleted){
+            cell?.title?.attributedText = NSAttributedString(string: todo.name!, attributes: attributesForCompletedTitle)
             cell?.subTitle?.attributedText = NSAttributedString(string: "Completed", attributes: attributesForCompletedSubTitle)
-
         }else {
-            cell?.title?.text = todo.name
-            if(todo.hasDueDate){
-                if(todo.dueDate < Date()){
-                    cell?.title?.attributedText = NSAttributedString(string: todo.name, attributes: attributesForDueTitle)
+            cell?.title?.attributedText = NSAttributedString(string: todo.name!, attributes: attributesForDefault)
+            cell?.subTitle?.attributedText = NSAttributedString(string: "", attributes: attributesForDefault)
+            if(todo.hasDueDate && (todo.dueDate != nil)){
+                var components = DateComponents()
+                components.day = 1
+                components.second = -1
+                let endOfToday =  Calendar.current.date(byAdding: components, to: Calendar.current.startOfDay(for: Date()))!
+                if(todo.dueDate! < endOfToday){
+                    cell?.title?.attributedText = NSAttributedString(string: todo.name!, attributes: attributesForDueTitle)
                     cell?.subTitle?.attributedText = NSAttributedString(string: "Overdue!", attributes: attributesForDueSubTitle)
                 }else{
                     dateFormatter.dateFormat = "EEEE, MMM d, yyyy"
-                    cell?.subTitle?.text = dateFormatter.string(from: todo.dueDate)
+                    cell?.subTitle?.text = dateFormatter.string(from: todo.dueDate!)
                 }
-                
             }
-            
-            
         }
-        
-
         if (todo.isCompleted == true){
             cell?.isCompleted.setOn(true, animated: true)
         }else{
             cell?.isCompleted.setOn(false, animated: true)
         }
-
-
         return cell ?? UITableViewCell()
     }
     
-    
-    @objc func onEdit(_ sender: Any?){
-//        print("Edit on", index)
-        self.performSegue(withIdentifier: "showToDoDetail", sender: sender)
+    func onEdit(index: Int){
+        self.performSegue(withIdentifier: "showToDoDetail", sender: index)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let sizesVC =  segue.destination as! ToDoDetailViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: (Any)?) {
+        let toDoDetailVC =  segue.destination as! ToDoDetailViewController
+        toDoDetailVC.currentIndex = sender as? Int
     }
+    
+    func onIsCompletedToggleChange(value: Bool, index: Int){
+        let todo = todolist[index]
+        todo.setValue(value, forKey: #keyPath(ToDo.isCompleted))
+        do {
+            let managedContext = AppDelegate.sharedAppDelegate.coreDataStack.managedContext
+            try managedContext.save()
+            let indexPath = IndexPath(item: index, section: 0)
+            self.toDoListTable.reloadRows(at: [indexPath], with: .automatic)
+        } catch  {
+            print(error)
+        }
+    }
+    
+    
+//    override func tableView(_ tableView: UITableView,
+//                   leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//        let action = UIContextualAction(style: .normal,
+//                                        title: "Edit") { [weak self] (action, view, completionHandler) in
+//                                            self?.onEdit(index: indexPath.row)
+//                                            completionHandler(true)
+//        }
+//        action.backgroundColor = .systemBlue
+//        return UISwipeActionsConfiguration(actions: [action])
+//    }
+//
+//    private func removeToDo(index: Int) {
+//        do {
+//            let todo = todolist[index]
+//            let managedContext = AppDelegate.sharedAppDelegate.coreDataStack.managedContext
+//            managedContext.delete(todo)
+//            try managedContext.save()
+//            loadToDoList()
+//        } catch  {
+//            print(error)
+//        }
+//
+//    }
+//
+//    override func tableView(_ tableView: UITableView,
+//                       trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//        let todo = todolist[indexPath.row]
+//        let toggleVal = !todo.isCompleted
+//        let label = toggleVal ? "Complete" : "Incomplete"
+//        let toggleAction = UIContextualAction(style: .normal,
+//                                        title: label) { [weak self] (action, view, completionHandler) in
+//                                        self?.onIsCompletedToggleChange(value: toggleVal, index: indexPath.row)
+//                                            completionHandler(true)
+//        }
+//        toggleAction.backgroundColor = .systemYellow
+//
+//        let deleteAction = UIContextualAction(style: .normal,
+//                                        title: "Delete") { [weak self] (action, view, completionHandler) in
+//                                        self?.removeToDo(index: indexPath.row)
+//                                            completionHandler(true)
+//        }
+//        deleteAction.backgroundColor = .systemRed
+//        return UISwipeActionsConfiguration(actions: [deleteAction, toggleAction])
+//    }
 }
 
+extension UIAlertController {
+
+    @objc func textDidChangeInAlert() {
+        let tf = textFields?[0]
+        var titleStr = tf!.text
+        let action = actions.first
+        action!.isEnabled = false
+        titleStr = titleStr!.trimmingCharacters(in: .whitespacesAndNewlines)
+        if(titleStr != ""){
+            action!.isEnabled = true
+        }
+    }
+}
