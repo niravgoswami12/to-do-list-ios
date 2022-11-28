@@ -186,6 +186,8 @@ class RootViewController: UITableViewController, ToDoItemCellDelegate {
         }else{
             cell?.isCompleted.setOn(false, animated: true)
         }
+        cell?.isCompleted.isHidden = true
+        cell?.editBtn.isHidden = true
         return cell ?? UITableViewCell()
     }
     
@@ -212,50 +214,79 @@ class RootViewController: UITableViewController, ToDoItemCellDelegate {
     }
     
     
-//    override func tableView(_ tableView: UITableView,
-//                   leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        let action = UIContextualAction(style: .normal,
-//                                        title: "Edit") { [weak self] (action, view, completionHandler) in
-//                                            self?.onEdit(index: indexPath.row)
-//                                            completionHandler(true)
-//        }
-//        action.backgroundColor = .systemBlue
-//        return UISwipeActionsConfiguration(actions: [action])
-//    }
-//
-//    private func removeToDo(index: Int) {
-//        do {
+    override func tableView(_ tableView: UITableView,
+                   leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .normal,
+                                        title: "Edit") { [weak self] (action, view, completionHandler) in
+                                            self?.onEdit(index: indexPath.row)
+                                            completionHandler(true)
+        }
+        action.backgroundColor = .systemBlue
+        return UISwipeActionsConfiguration(actions: [action])
+    }
+
+    private func removeToDo(index: Int) {
+        do {
 //            let todo = todolist[index]
 //            let managedContext = AppDelegate.sharedAppDelegate.coreDataStack.managedContext
 //            managedContext.delete(todo)
 //            try managedContext.save()
 //            loadToDoList()
-//        } catch  {
-//            print(error)
-//        }
-//
-//    }
-//
-//    override func tableView(_ tableView: UITableView,
-//                       trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        let todo = todolist[indexPath.row]
-//        let toggleVal = !todo.isCompleted
-//        let label = toggleVal ? "Complete" : "Incomplete"
-//        let toggleAction = UIContextualAction(style: .normal,
-//                                        title: label) { [weak self] (action, view, completionHandler) in
-//                                        self?.onIsCompletedToggleChange(value: toggleVal, index: indexPath.row)
-//                                            completionHandler(true)
-//        }
-//        toggleAction.backgroundColor = .systemYellow
-//
-//        let deleteAction = UIContextualAction(style: .normal,
-//                                        title: "Delete") { [weak self] (action, view, completionHandler) in
-//                                        self?.removeToDo(index: indexPath.row)
-//                                            completionHandler(true)
-//        }
-//        deleteAction.backgroundColor = .systemRed
-//        return UISwipeActionsConfiguration(actions: [deleteAction, toggleAction])
-//    }
+            
+            let dialogMessage = UIAlertController(title: "Confirm", message: "Are you sure you want to delete this?", preferredStyle: .alert)
+            
+            // Create OK button with action handler
+            let ok = UIAlertAction(title: "OK", style: .default, handler: { [self] (action) -> Void in
+                // Save Changes
+                do {
+                    let todo = todolist[index]
+                    let managedContext = AppDelegate.sharedAppDelegate.coreDataStack.managedContext
+                    managedContext.delete(todo)
+                    try managedContext.save()
+                    loadToDoList()
+                } catch  {
+                    print(error)
+                }
+                
+            })
+            
+            // Create Cancel button with action handlder
+            let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) -> Void in
+                
+            }
+            
+            //Add OK and Cancel button to dialog message
+            dialogMessage.addAction(ok)
+            dialogMessage.addAction(cancel)
+            
+            // Present dialog message to user
+            self.present(dialogMessage, animated: true, completion: nil)
+        } catch  {
+            print(error)
+        }
+
+    }
+
+    override func tableView(_ tableView: UITableView,
+                       trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let todo = todolist[indexPath.row]
+        let toggleVal = !todo.isCompleted
+        let label = toggleVal ? "Complete" : "Incomplete"
+        let toggleAction = UIContextualAction(style: .normal,
+                                        title: label) { [weak self] (action, view, completionHandler) in
+                                        self?.onIsCompletedToggleChange(value: toggleVal, index: indexPath.row)
+                                            completionHandler(true)
+        }
+        toggleAction.backgroundColor = .systemYellow
+
+        let deleteAction = UIContextualAction(style: .normal,
+                                        title: "Delete") { [weak self] (action, view, completionHandler) in
+                                        self?.removeToDo(index: indexPath.row)
+                                            completionHandler(true)
+        }
+        deleteAction.backgroundColor = .systemRed
+        return UISwipeActionsConfiguration(actions: [deleteAction, toggleAction])
+    }
 }
 
 extension UIAlertController {
